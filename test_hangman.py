@@ -1,6 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock
-from unittest.mock import patch
+import mock
 
 from hangman import HangmanGame
 
@@ -23,7 +22,7 @@ class HangmanGameTestCase(TestCase):
         self.check_input_processed('3', 'not_letter', 5)
         self.check_input_processed('_', 'not_letter', 5)
         self.check_input_processed('3abc', 'not_letter', 5)
-        self.check_input_processed('🤓', 'not_letter', 5)
+        self.check_input_processed('', 'not_letter', 5)
 
     def test_process_valid_input(self):
         self.check_input_processed('a', 'unlucky_guess', 4)
@@ -49,7 +48,7 @@ class HangmanGameTestCase(TestCase):
         self.check_input_processed('w', 'unlucky_guess', 1)
         self.check_input_processed('v', 'epic_fail', 0)
 
-    @patch('hangman.get_input', Mock(side_effect=['z', 'x', 'c', 'v', 'b', 'n']))
+    @mock.patch('hangman.get_input', mock.Mock(side_effect=['z', 'x', 'c', 'v', 'b', 'n']))
     def test_game(self):
         self.h.start_game()
         assert self.h.failed_attemts_left == 0
