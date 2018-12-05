@@ -9,6 +9,7 @@ class HangmanGameTestCase(TestCase):
     def setUp(self):
         self.h = HangmanGame()
         self.h.choosen_word = '3dhubshubs'
+        self.h.players_name = 'test'
         self.h.prepare()
 
     def check_input_processed(self, input, expected_result, attempts):
@@ -22,7 +23,6 @@ class HangmanGameTestCase(TestCase):
         self.check_input_processed('3', 'not_letter', 5)
         self.check_input_processed('_', 'not_letter', 5)
         self.check_input_processed('3abc', 'not_letter', 5)
-        self.check_input_processed('', 'not_letter', 5)
 
     def test_process_valid_input(self):
         self.check_input_processed('a', 'unlucky_guess', 4)
@@ -48,7 +48,7 @@ class HangmanGameTestCase(TestCase):
         self.check_input_processed('w', 'unlucky_guess', 1)
         self.check_input_processed('v', 'epic_fail', 0)
 
-    @mock.patch('hangman.get_input', mock.Mock(side_effect=['z', 'x', 'c', 'v', 'b', 'n']))
+    @mock.patch('hangman.get_input', mock.Mock(side_effect=['test', 'z', 'x', 'c', 'v', 'b', 'n']))
     def test_game(self):
         self.h.start_game()
         assert self.h.failed_attemts_left == 0

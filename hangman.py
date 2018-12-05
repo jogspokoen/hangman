@@ -1,8 +1,10 @@
 from random import choice
+import csv
 
 # separating text strings is good practice, e.g. for translation purposes
 MESSAGES = {
     'welcome': 'Welcome to the HangMan game!',
+    'name': 'What is your name?',
     'guess_invitation': 'Your guess: ',
     'not_letter': 'This is not a single letter. Please be careful when you type. It\'s violent game, after all.',
     'already_revealed': 'This letter is already revealed. No need to double-check, trust me',
@@ -11,10 +13,12 @@ MESSAGES = {
     'unlucky_guess': 'Nice try, but you was wrong, and this is one step closer to the edge',
     'attempts_left': 'You have {} attempts left!',
     'epic_win': 'You won! Such a lucky day for you. Go buy some lottery.',
-    'epic_fail': 'We need to talk. Just sit back and listen. '
-                 'It\'s not about you, it\'s about me. '
-                 'You have no more attempts. '
-                 'This is the end of this game. Bye.'
+    'epic_fail': 'We need to talk.\n'
+                 'Just sit back and listen.\n'
+                 'It\'s not about you, it\'s about me.\n'
+                 'You have no more attempts.\n'
+                 'This is the end of this game.\n'
+                 'Bye.\n'
 }
 
 
@@ -27,6 +31,8 @@ class HangmanGame:
     wordlist = ['3dhubs', 'marvin', 'print', 'filament', 'order', 'layer']
     choosen_word = None
     failed_attemts_left = 5
+    players_name = None
+    highscore_file = 'highscore.csv'
 
     def __init__(self):
         self.choosen_word = choice(self.wordlist)
@@ -41,6 +47,7 @@ class HangmanGame:
 
     def start_game(self):
         print(MESSAGES['welcome'])
+        self.players_name = get_input(MESSAGES['name']).lower()
         self.step()
 
     def step(self):
@@ -87,9 +94,33 @@ class HangmanGame:
                 return self.finalize_fail()
             return 'unlucky_guess'
 
+    def show_highscore(self):
+        # saving current record
+        with open(self.highscore_file, 'a') as f:
+            csv.writer(f).writerows([[self.players_name, self.failed_attemts_left]])
+
+        with open(self.highscore_file, 'r') as f:
+            # grouping highscore by player's name
+            score = dict()
+            for t in csv.reader(f):
+                score[t[0]] = max(score.get(t[0], 0), int(t[1]))
+
+        # show standings
+        formatter = '|%-16s| %-5s|'
+        print(' %-16s %-5s ' % ('_' * 16, '_' * 5))
+        print(formatter % ('Name', 'Score'))
+        print(formatter % ('‾' * 16, '‾' * 5))
+        for k in sorted(score, key=score.get, reverse=True):
+            print(formatter % (k, score[k]))
+        print(' %-16s %-5s ' % ('‾' * 16, '‾' * 5))
+
     def finalize_win(self):
-        # TODO: highscore
+        self.show_highscore()
         return 'epic_win'
 
     def finalize_fail(self):
         return 'epic_fail'
+
+
+if __name__ == '__main__':
+    HangmanGame().start_game()
