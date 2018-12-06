@@ -18,4 +18,4 @@ HangmanGame().start_game()
 pip install -r requirements.txt
 pytest
 ```
-![Games recorded](hangman.svg)
+### [Play demo](https://jogspokoen.github.io/hangman/hangman.svg?sanitized=true)
