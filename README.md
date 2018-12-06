@@ -18,3 +18,4 @@ HangmanGame().start_game()
 pip install -r requirements.txt
 pytest
 ```
+![Games recorded](hangman.svg)
